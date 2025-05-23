@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Domain\Savr.Core.Domain\Savr.Core.Domain\Savr.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\Domain\Savr.Core.Domain\Savr.Core.Domain\Savr.Core.Domain.csproj" />
   </ItemGroup>
 
 </Project>

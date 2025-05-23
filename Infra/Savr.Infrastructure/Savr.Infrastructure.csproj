@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Savr_FinancialTracker\Savr.Core.Application\Savr.Core.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Application\Savr.Core.Application\Savr.Core.Application.csproj" />
   </ItemGroup>
 
 </Project>
