@@ -4,14 +4,14 @@ using Savr.Core.Domain.Models;
 
 namespace Savr.Infrastructure.Persistence.Configurations
 {
-    internal class TransactionConfiguration : IEntityTypeConfiguration<FinancialTransaction>
+    internal class IncomeConfiguration : IEntityTypeConfiguration<Income>
     {
-        public void Configure(EntityTypeBuilder<FinancialTransaction> builder)
+        public void Configure(EntityTypeBuilder<Income> builder)
         {
-            builder.ToTable("FinancialTransactions", "savr");
+            builder.ToTable("Incomes", "savr");
 
             builder.HasKey(c => c.Id);
-            builder.Property(c => c.TransactionId).HasDefaultValue("NEWID()").ValueGeneratedOnAdd();
+            builder.Property(c => c.IncomeId).HasDefaultValue("NEWID()").ValueGeneratedOnAdd();
             builder.Property(c => c.Amount).HasColumnName("Amount").HasColumnType("money");
             builder.Property(c => c.IsDeleted).HasDefaultValue(false);
         }

@@ -15,18 +15,16 @@ namespace Savr.Infrastructure.Migrations
                 name: "savr");
 
             migrationBuilder.CreateTable(
-                name: "FinancialTransactions",
+                name: "Expense",
                 schema: "savr",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TransactionId = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "NEWID()"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Category = table.Column<int>(type: "int", nullable: false),
+                    ExpenseId = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "NEWID()"),
+                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpenseType = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "money", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -36,7 +34,7 @@ namespace Savr.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FinancialTransactions", x => x.Id);
+                    table.PrimaryKey("PK_Expense", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,6 +58,30 @@ namespace Savr.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Goals", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Incomes",
+                schema: "savr",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IncomeId = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "NEWID()"),
+                    SourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IncomeCategory = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "money", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedUser = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Incomes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,11 +113,15 @@ namespace Savr.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FinancialTransactions",
+                name: "Expense",
                 schema: "savr");
 
             migrationBuilder.DropTable(
                 name: "Goals",
+                schema: "savr");
+
+            migrationBuilder.DropTable(
+                name: "Incomes",
                 schema: "savr");
 
             migrationBuilder.DropTable(

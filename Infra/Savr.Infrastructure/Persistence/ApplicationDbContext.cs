@@ -49,7 +49,8 @@ namespace Savr.Infrastructure.Persistence
             base.OnModelCreating(modelBuilder);
         }
 
-        public virtual DbSet<FinancialTransaction> Transactions { get; set; }
+        public virtual DbSet<Expense> Expenses { get; set; }
+        public virtual DbSet<Income> Incomes { get; set; }
         public virtual DbSet<Goal> Goals { get; set; }
         public virtual DbSet<User> Users { get; set; }
     }

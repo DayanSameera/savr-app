@@ -11,7 +11,8 @@ namespace Savr.Core.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
-        public DbSet<FinancialTransaction> Transactions { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
+        public DbSet<Income> Incomes { get; set; }
         public DbSet<Goal> Goals { get; set; }
         public DbSet<User> Users { get; set; }
 
