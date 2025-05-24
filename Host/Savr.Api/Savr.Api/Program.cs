@@ -1,6 +1,5 @@
-using Microsoft.Extensions.Configuration;
+using Savr.Core.Application;
 using Savr.Infrastructure;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +9,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

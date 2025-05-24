@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Extentions\" />
+    <Folder Include="Incomes\Queries\GetById\" />
   </ItemGroup>
 
   <ItemGroup>
