@@ -4,7 +4,7 @@ namespace Savr.Core.Domain.Models
 {
     public class FinancialTransaction : ModelBase
     {
-        public Guid TransactionId { get; set; }
+        public required string TransactionId { get; set; }
         public required string Name { get; set; }
         public TransactionTypeEnum Type { get; set; }
         public CategoryEnum Category { get; set; }
