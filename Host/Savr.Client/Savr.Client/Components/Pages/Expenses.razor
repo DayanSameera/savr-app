@@ -1,0 +1,70 @@
+﻿@page "/expenses"
+@rendermode InteractiveServer
+
+@using System.Net.Http.Json
+@using Savr.Client.Components.Dialogs
+@inject NavigationManager navigateMgr;
+@inject IDialogService DialogService
+
+<PageTitle>Expenses</PageTitle>
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+	<MudIconButton Icon="@Icons.Material.Filled.ArrowCircleLeft" Size="@Size.Large" Color="Color.Default" @onclick="NavigateToHomeComponent" />
+
+	<MudButton @onclick="OpenDialogAsync" Variant="Variant.Filled" Color="Color.Primary">
+		Add New
+	</MudButton>
+
+	<h2>Expenses</h2>
+	<MudDataGrid Items="@employees" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+		<Columns>
+			<PropertyColumn Property="x => x.Name" />
+			<PropertyColumn Property="x => x.Position" />
+			<PropertyColumn Property="x => x.YearsEmployed" Title="Years Employed" />
+			<PropertyColumn Property="x => x.Salary" Format="C" />
+			<PropertyColumn Property="x => x.Salary * x.YearsEmployed" Title="Total Earned" Format="C" />
+			<TemplateColumn CellClass="d-flex justify-end">
+				<CellTemplate>
+					<MudStack Row>
+						<MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+					</MudStack>
+				</CellTemplate>
+			</TemplateColumn>
+		</Columns>
+	</MudDataGrid>
+</MudContainer>
+
+@code {
+	public record Employee(string Name, string Position, int YearsEmployed, int Salary);
+	public IEnumerable<Employee> employees;
+
+	protected override void OnInitialized()
+	{
+		employees = new List<Employee>
+		{
+			new Employee("Sam", "CPA", 23, 87_000),
+			new Employee("Alicia", "Product Manager", 11, 143_000),
+			new Employee("Ira", "Developer", 4, 92_000),
+			new Employee("John", "IT Director", 17, 229_000),
+		};
+	}
+
+	private async Task OpenDialogAsync()
+	{
+		var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true };
+		var dialogReference = await DialogService.ShowAsync<AddExpensesDialog>("Add Expense", options);
+		StateHasChanged();
+		var dialogResult = await dialogReference.Result;
+		if (dialogResult.Canceled)
+		{
+			StateHasChanged();
+		}
+		else
+		{
+			var data = dialogResult.Data;
+			StateHasChanged();
+		}
+	}
+
+	private void NavigateToHomeComponent() => navigateMgr.NavigateTo("/");
+}

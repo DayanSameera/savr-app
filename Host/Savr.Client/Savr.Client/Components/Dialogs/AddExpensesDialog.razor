@@ -1,0 +1,63 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
+<MudDialog DisableSidePadding="true">
+	<DialogContent>
+		<MudContainer MaxWidth="MaxWidth.Medium" Width="100%" Class="pa-4">
+			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+				<MudSelect T="string" Label="Expense Type" @bind-Value="_returnValue" Required="true" RequiredError="Expense type required">
+					<MudSelectItem Value="@("Credit Card Payment")" />
+					<MudSelectItem Value="@("Grocery")" />
+					<MudSelectItem Value="@("Traveling")" />
+					<MudSelectItem Value="@("Bill Payment")" />
+					<MudSelectItem Value="@("Insurance")" />
+					<MudSelectItem Value="@("Medical")" />
+				</MudSelect>
+				<MudNumericField T="string" Label="Amount" Required="true" RequiredError="Amount is required!" />
+				<MudTextField T="string" Label="Reference" Required="true" RequiredError="Reference required" />
+			</MudForm>
+		</MudContainer>
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="Color.Primary" OnClick="Cancel">Cancel</MudButton>
+		<MudButton Variant="Variant.Filled" C Color="Color.Primary" OnClick="Submit" Disabled="@(!success)">Save</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+	[Inject]
+	private IDialogService DialogService { get; set; } // for MessageBox
+
+	[CascadingParameter]
+	private IMudDialogInstance MudDialog { get; set; }
+
+	bool success;
+	string[] errors = { };
+	MudForm form;
+
+	private string _returnValue;
+
+	private void Submit() => MudDialog.Close(DialogResult.Ok(_returnValue));
+
+	private void Cancel() => MudDialog.Cancel();
+
+	private async Task OnKeyDownAsync(KeyboardEventArgs args)
+	{
+		switch (args.Key)
+		{
+			case "Enter":
+			case "NumpadEnter":
+				if (string.IsNullOrEmpty(_returnValue))
+				{
+					await DialogService.ShowMessageBox(
+						"Sorry",
+						@"You must either select a coffee and close with Enter or cancel with Escape!",
+						yesText: "Got it",
+						options: new DialogOptions() { CloseOnEscapeKey = true });
+					return;
+				}
+				Submit();
+				break;
+		}
+	}
+}

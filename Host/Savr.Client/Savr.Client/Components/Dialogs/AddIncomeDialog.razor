@@ -1,0 +1,63 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
+<MudDialog DisableSidePadding="true">
+	<DialogContent>
+		<MudContainer MaxWidth="MaxWidth.Medium" Width="100%" Class="pa-4">
+			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+				<MudTextField T="string" Label="Name" Required="true" RequiredError="Name required" />
+				<MudNumericField T="string" Label="Amount" Required="true" RequiredError="Amount is required!" />
+				<MudSelect T="string" Label="Income Category" @bind-Value="_returnValue" Required="true" RequiredError="Income category required">
+					<MudSelectItem Value="@("Salary")" />
+					<MudSelectItem Value="@("Gift")" />
+					<MudSelectItem Value="@("Commission")" />
+					<MudSelectItem Value="@("Profit Income")" />
+					<MudSelectItem Value="@("Fixed Deposit Income")" />
+				</MudSelect>
+				<MudTextField T="string" Label="Notes" />
+			</MudForm>
+		</MudContainer>
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="Color.Primary" OnClick="Cancel">Cancel</MudButton>
+		<MudButton Variant="Variant.Filled" C Color="Color.Primary" OnClick="Submit" Disabled="@(!success)">Save</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+	[Inject]
+	private IDialogService DialogService { get; set; } // for MessageBox
+
+	[CascadingParameter]
+	private IMudDialogInstance MudDialog { get; set; }
+
+	bool success;
+	string[] errors = { };
+	MudForm form;
+
+	private string _returnValue;
+
+	private void Submit() => MudDialog.Close(DialogResult.Ok(_returnValue));
+
+	private void Cancel() => MudDialog.Cancel();
+
+	private async Task OnKeyDownAsync(KeyboardEventArgs args)
+	{
+		switch (args.Key)
+		{
+			case "Enter":
+			case "NumpadEnter":
+				if (string.IsNullOrEmpty(_returnValue))
+				{
+					await DialogService.ShowMessageBox(
+						"Sorry",
+						@"You must either select a coffee and close with Enter or cancel with Escape!",
+						yesText: "Got it",
+						options: new DialogOptions() { CloseOnEscapeKey = true });
+					return;
+				}
+				Submit();
+				break;
+		}
+	}
+}
