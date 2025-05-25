@@ -8,10 +8,10 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
 	<MudGrid>
 		<MudItem xs="12" sm="6" md="4">
-			<MudCard Elevation="2" Class="pa-1">
+			<MudCard Elevation="2" Class="pa-1 card-income">
 				<MudCardHeader>
 					<CardHeaderContent>
-						<MudText Typo="Typo.h3">@incomeTotal $</MudText>
+						<MudText Typo="Typo.h3" Style="color: mediumseagreen">@incomeTotal $</MudText>
 					</CardHeaderContent>
 					<CardHeaderActions>
 						<MudIconButton Icon="@Icons.Material.Filled.ArrowCircleRight" Size="@Size.Large" Color="Color.Default"
@@ -24,10 +24,10 @@
 			</MudCard>
 		</MudItem>
 		<MudItem xs="12" sm="6" md="4">
-			<MudCard Elevation="2" Class="pa-1">
+			<MudCard Elevation="2" Class="pa-1 card-expense">
 				<MudCardHeader>
 					<CardHeaderContent>
-						<MudText Typo="Typo.h3">@expensesTotal $</MudText>
+						<MudText Typo="Typo.h3" Style="color: deeppink">@expensesTotal $</MudText>
 					</CardHeaderContent>
 					<CardHeaderActions>
 						<MudIconButton Icon="@Icons.Material.Filled.ArrowCircleRight" Size="@Size.Large" Color="Color.Default"
@@ -40,10 +40,10 @@
 			</MudCard>
 		</MudItem>
 		<MudItem xs="12" sm="12" md="4">
-			<MudCard Elevation="2" Class="pa-1">
+			<MudCard Elevation="2" Class="pa-1 card-savings">
 				<MudCardHeader>
 					<CardHeaderContent>
-						<MudText Typo="Typo.h3">@savingsTotal $</MudText>
+						<MudText Typo="Typo.h3" Style="color: blueviolet">@savingsTotal $</MudText>
 					</CardHeaderContent>
 					<CardHeaderActions>
 						<MudIconButton Icon="@Icons.Material.Filled.Analytics" Size="@Size.Large" Color="Color.Default" />
@@ -87,6 +87,28 @@
 		font-family: Arial;
 	}
 
+	/* Add a colored left line */
+	.card-income {
+		border-bottom: 2px solid mediumseagreen; /* Blue color, adjust as needed */
+		border-right: 0; /* Remove right border */
+		border-top: 0; /* Remove top border */
+		border-left: 0; /* Remove bottom border */
+	}
+
+	.card-expense {
+		border-bottom: 2px solid deeppink; /* Blue color, adjust as needed */
+		border-right: 0; /* Remove right border */
+		border-top: 0; /* Remove top border */
+		border-left: 0; /* Remove bottom border */
+	}
+
+	.card-savings {
+		border-bottom: 2px solid blueviolet; /* Blue color, adjust as needed */
+		border-right: 0; /* Remove right border */
+		border-top: 0; /* Remove top border */
+		border-left: 0; /* Remove bottom border */
+	}
+
 </style>
 
 @code {
@@ -95,6 +117,9 @@
 	int incomeTotal = 3600;
 	int savingsTotal = 2900;
 
+	private bool _editable = true;
+	private bool _clearable = true;
+	private DateRange _dateRange { get; set; }
 
 	private void NavigateToIncomeComponent() => navigateMgr.NavigateTo("income");
 	private void NavigateToExpenseComponent() => navigateMgr.NavigateTo("expenses");

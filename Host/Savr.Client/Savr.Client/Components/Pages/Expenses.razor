@@ -3,6 +3,7 @@
 
 @using System.Net.Http.Json
 @using Savr.Client.Components.Dialogs
+@using Savr.Client.Services.Interafces
 @inject NavigationManager navigateMgr;
 @inject IDialogService DialogService
 
@@ -16,17 +17,17 @@
 	</MudButton>
 
 	<h2>Expenses</h2>
-	<MudDataGrid Items="@employees" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+	<MudDataGrid Items="@expenseList" Filterable="true" SortMode="@SortMode.None" Groupable="false" Hover="true" HeaderClass="mud-secondary">
 		<Columns>
-			<PropertyColumn Property="x => x.Name" />
-			<PropertyColumn Property="x => x.Position" />
-			<PropertyColumn Property="x => x.YearsEmployed" Title="Years Employed" />
-			<PropertyColumn Property="x => x.Salary" Format="C" />
-			<PropertyColumn Property="x => x.Salary * x.YearsEmployed" Title="Total Earned" Format="C" />
+			<PropertyColumn Property="x => x.Reference" Title="Reference" />
+			<PropertyColumn Property="x => x.ExpenseType" Title="Expense Type" />
+			<PropertyColumn Property="x => x.Amount" Format="C" Title="Amount" />
+			<PropertyColumn Property="x => x.Date" Format="dd/MM/yy" />
 			<TemplateColumn CellClass="d-flex justify-end">
 				<CellTemplate>
 					<MudStack Row>
-						<MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+						<MudButton Size="@Size.Small" Variant="@Variant.Outlined" Color="@Color.Primary">Edit</MudButton>
+						<MudButton Size="@Size.Small" Variant="@Variant.Outlined" Color="@Color.Primary">DElete</MudButton>
 					</MudStack>
 				</CellTemplate>
 			</TemplateColumn>
@@ -35,18 +36,14 @@
 </MudContainer>
 
 @code {
-	public record Employee(string Name, string Position, int YearsEmployed, int Salary);
-	public IEnumerable<Employee> employees;
+	public IEnumerable<Savr.Client.Data.Models.Expense> expenseList;
 
-	protected override void OnInitialized()
+	[Inject]
+	public IExpenseService ExpenseService { get; set; }
+
+	protected override async Task OnInitializedAsync()
 	{
-		employees = new List<Employee>
-		{
-			new Employee("Sam", "CPA", 23, 87_000),
-			new Employee("Alicia", "Product Manager", 11, 143_000),
-			new Employee("Ira", "Developer", 4, 92_000),
-			new Employee("John", "IT Director", 17, 229_000),
-		};
+		expenseList = await ExpenseService.GetExpenses();
 	}
 
 	private async Task OpenDialogAsync()
@@ -62,6 +59,7 @@
 		else
 		{
 			var data = dialogResult.Data;
+			expenseList = await ExpenseService.GetExpenses();
 			StateHasChanged();
 		}
 	}

@@ -11,7 +11,7 @@ namespace Savr.Core.Application.Incomes.Commands.Create
         public required string IncomeCategory { get; set; }
         public required decimal Amount { get; set; }
         public string? Note { get; set; }
-        public required string Date { get; set; }
+        public required DateTime Date { get; set; }
     }
 
     public class CreateIncomeCommandHandler : IRequestHandler<CreateIncomeCommand, string>
@@ -31,8 +31,8 @@ namespace Savr.Core.Application.Incomes.Commands.Create
                 Amount = incomeCommand.Amount,
                 Note = incomeCommand.Note,
                 SourceName = incomeCommand.SourceName,
-                IncomeCategory = (IncomeCategoryEnum)Enum.Parse(typeof(IncomeCategoryEnum), incomeCommand.IncomeCategory),
-                Date = DateTime.Parse(incomeCommand.Date)
+                IncomeCategory = (IncomeCategoryEnum)Enum.Parse(typeof(IncomeCategoryEnum), incomeCommand.IncomeCategory.Replace(" ", string.Empty)),
+                Date = incomeCommand.Date
             };
 
             _context.Incomes.Add(income);

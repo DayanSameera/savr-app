@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Savr.Core.Application.Expenses.Queries.GetAll;
 using Savr.Core.Application.Incomes.Commands.Create;
+using Savr.Core.Application.Incomes.Queries.GetAll;
 
 namespace Savr.Api.Controllers
 {
@@ -16,9 +17,9 @@ namespace Savr.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ExpenseDTO>>> Get()
+        public async Task<ActionResult<List<IncomeDTO>>> Get()
         {
-            return await Mediator.Send(new GetExpensesQuery());
+            return await Mediator.Send(new GetIncomesQuery());
         }
     }
 }

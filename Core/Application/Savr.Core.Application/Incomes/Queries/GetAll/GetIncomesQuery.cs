@@ -4,11 +4,11 @@ using Savr.Core.Application.Common.Interfaces;
 
 namespace Savr.Core.Application.Incomes.Queries.GetAll
 {
-    public class GetIncomesQuery : IRequest<IList<IncomeDTO>>
+    public class GetIncomesQuery : IRequest<List<IncomeDTO>>
     {
     }
 
-    public class GetIncomesQueryHandler : IRequestHandler<GetIncomesQuery, IList<IncomeDTO>>
+    public class GetIncomesQueryHandler : IRequestHandler<GetIncomesQuery, List<IncomeDTO>>
     {
         private readonly IApplicationDbContext _context;
 
@@ -17,7 +17,7 @@ namespace Savr.Core.Application.Incomes.Queries.GetAll
             _context = context;
         }
 
-        public async Task<IList<IncomeDTO>> Handle(GetIncomesQuery request, CancellationToken cancellationToken)
+        public async Task<List<IncomeDTO>> Handle(GetIncomesQuery request, CancellationToken cancellationToken)
         {
             return await _context.Incomes.Where(q => !q.IsDeleted).Select(x => new IncomeDTO
             {

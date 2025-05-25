@@ -1,26 +1,30 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
+@using Savr.Client.Data.Models
+@using Savr.Client.Services.Interafces
+@inject ISnackbar SnackBar
 
 <MudDialog DisableSidePadding="true">
 	<DialogContent>
 		<MudContainer MaxWidth="MaxWidth.Medium" Width="100%" Class="pa-4">
 			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-				<MudTextField T="string" Label="Name" Required="true" RequiredError="Name required" />
-				<MudNumericField T="string" Label="Amount" Required="true" RequiredError="Amount is required!" />
-				<MudSelect T="string" Label="Income Category" @bind-Value="_returnValue" Required="true" RequiredError="Income category required">
+				<MudTextField T="string" Label="Name" Required="true" RequiredError="Name required" @bind-Value="income.SourceName" />
+				<MudNumericField T="decimal" Label="Amount" Required="true" RequiredError="Amount is required!" @bind-Value="income.Amount" />
+				<MudSelect T="string" Label="Income Category" @bind-Value="income.IncomeCategory" Required="true" RequiredError="Income category required">
 					<MudSelectItem Value="@("Salary")" />
 					<MudSelectItem Value="@("Gift")" />
 					<MudSelectItem Value="@("Commission")" />
 					<MudSelectItem Value="@("Profit Income")" />
 					<MudSelectItem Value="@("Fixed Deposit Income")" />
 				</MudSelect>
-				<MudTextField T="string" Label="Notes" />
+				<MudDatePicker Label="Date" @bind-Date="currentDate" />
+				<MudTextField T="string" Label="Notes" @bind-Value="income.Note" />
 			</MudForm>
 		</MudContainer>
 	</DialogContent>
 	<DialogActions>
 		<MudButton Color="Color.Primary" OnClick="Cancel">Cancel</MudButton>
-		<MudButton Variant="Variant.Filled" C Color="Color.Primary" OnClick="Submit" Disabled="@(!success)">Save</MudButton>
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Disabled="@(!success)">Save</MudButton>
 	</DialogActions>
 </MudDialog>
 
@@ -31,33 +35,40 @@
 	[CascadingParameter]
 	private IMudDialogInstance MudDialog { get; set; }
 
+	[Inject]
+	public IIncomeService IncomeService { get; set; }
+
+	private DateTime? currentDate = DateTime.Today;
+
+	public Income income = new Income()
+	{
+		Amount = 0,
+		SourceName = string.Empty,
+		IncomeCategory = string.Empty,
+		Date = DateTime.Today,
+		Note = string.Empty
+	};
+
 	bool success;
 	string[] errors = { };
 	MudForm form;
 
-	private string _returnValue;
+	private async Task Submit()
+	{
+		var incomeList = await IncomeService.CreateIncome(income);
 
-	private void Submit() => MudDialog.Close(DialogResult.Ok(_returnValue));
+		if (incomeList != null)
+		{
+			SnackBar.Add("Record added Successfully!", Severity.Success);
+		}
+
+		MudDialog.Close(DialogResult.Ok(string.Empty));
+	}
 
 	private void Cancel() => MudDialog.Cancel();
 
-	private async Task OnKeyDownAsync(KeyboardEventArgs args)
+	protected override async Task OnInitializedAsync()
 	{
-		switch (args.Key)
-		{
-			case "Enter":
-			case "NumpadEnter":
-				if (string.IsNullOrEmpty(_returnValue))
-				{
-					await DialogService.ShowMessageBox(
-						"Sorry",
-						@"You must either select a coffee and close with Enter or cancel with Escape!",
-						yesText: "Got it",
-						options: new DialogOptions() { CloseOnEscapeKey = true });
-					return;
-				}
-				Submit();
-				break;
-		}
+
 	}
 }

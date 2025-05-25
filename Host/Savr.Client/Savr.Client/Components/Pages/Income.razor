@@ -1,5 +1,7 @@
 ﻿@page "/income"
 @using Savr.Client.Components.Dialogs
+@using Savr.Client.Services.Interafces
+@using Savr.Client.Data.Models;
 @attribute [StreamRendering]
 @inject NavigationManager navigateMgr;
 @inject IDialogService DialogService
@@ -13,18 +15,19 @@
 		Add New
 	</MudButton>
 
-	<h2>Income</h2>
-	<MudDataGrid Items="@employees" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+	<h2>Income Deposits</h2>
+	<MudDataGrid Items="@incomeList" Filterable="true" SortMode="@SortMode.None" Hover="true" Groupable="false" HeaderClass="mud-success">
 		<Columns>
-			<PropertyColumn Property="x => x.Name" />
-			<PropertyColumn Property="x => x.Position" />
-			<PropertyColumn Property="x => x.YearsEmployed" Title="Years Employed" />
-			<PropertyColumn Property="x => x.Salary" Format="C" />
-			<PropertyColumn Property="x => x.Salary * x.YearsEmployed" Title="Total Earned" Format="C" />
+			<PropertyColumn Property="x => x.SourceName" Title="Name" />
+			<PropertyColumn Property="x => x.IncomeCategory" Title="Category" />
+			<PropertyColumn Property="x => x.Amount" Format="C" Title="Amount" />
+			<PropertyColumn Property="x => x.Date" Format="dd/MM/yy" />
+			<PropertyColumn Property="x => x.Note" Title="Notes" />
 			<TemplateColumn CellClass="d-flex justify-end">
 				<CellTemplate>
 					<MudStack Row>
-						<MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+						<MudButton Size="@Size.Small" Variant="@Variant.Outlined" Color="@Color.Primary">Edit</MudButton>
+						<MudButton Size="@Size.Small" Variant="@Variant.Outlined" Color="@Color.Primary">DElete</MudButton>
 					</MudStack>
 				</CellTemplate>
 			</TemplateColumn>
@@ -34,21 +37,17 @@
 
 
 @code {
-	public record Employee(string Name, string Position, int YearsEmployed, int Salary);
-	public IEnumerable<Employee> employees;
+	public IEnumerable<Savr.Client.Data.Models.Income> incomeList;
 
-	protected override void OnInitialized()
+	[Inject]
+	public IIncomeService IncomeService { get; set; }
+
+	protected override async Task OnInitializedAsync()
 	{
-		employees = new List<Employee>
-		{
-			new Employee("Sam", "CPA", 23, 87_000),
-			new Employee("Alicia", "Product Manager", 11, 143_000),
-			new Employee("Ira", "Developer", 4, 92_000),
-			new Employee("John", "IT Director", 17, 229_000),
-		};
+		incomeList = await IncomeService.GetIncomes();
 	}
 
-		private async Task OpenDialogAsync()
+	private async Task OpenDialogAsync()
 	{
 		var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true };
 		var dialogReference = await DialogService.ShowAsync<AddIncomeDialog>("Add Fund", options);
@@ -61,6 +60,7 @@
 		else
 		{
 			var data = dialogResult.Data;
+			incomeList = await IncomeService.GetIncomes();
 			StateHasChanged();
 		}
 	}

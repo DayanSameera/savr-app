@@ -10,7 +10,7 @@ namespace Savr.Core.Application.Expenses.Commands.Create
         public required string Reference { get; set; }
         public required string ExpenseType { get; set; }
         public required decimal Amount { get; set; }
-        public required string Date { get; set; }
+        public required DateTime Date { get; set; }
     }
 
     public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, string>
@@ -29,8 +29,8 @@ namespace Savr.Core.Application.Expenses.Commands.Create
                 ExpenseId = Guid.NewGuid().ToString(),
                 Amount = request.Amount,
                 Reference = request.Reference,
-                ExpenseType = (ExpenseCategoryEnum)Enum.Parse(typeof(ExpenseCategoryEnum), request.ExpenseType),
-                Date = DateTime.Parse(request.Date)
+                ExpenseType = (ExpenseCategoryEnum)Enum.Parse(typeof(ExpenseCategoryEnum), request.ExpenseType.Replace(" ", string.Empty)),
+                Date = request.Date
             };
 
             _context.Expenses.Add(expense);
