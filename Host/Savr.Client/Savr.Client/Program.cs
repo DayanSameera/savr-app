@@ -20,6 +20,10 @@ builder.Services.AddHttpClient<IExpenseService, ExpenseService>(client =>
 {
     client.BaseAddress = new Uri(baseAddress);
 });
+builder.Services.AddHttpClient<IDashboardService, DashboardService>(client =>
+{
+    client.BaseAddress = new Uri(baseAddress);
+});
 
 var app = builder.Build();
 

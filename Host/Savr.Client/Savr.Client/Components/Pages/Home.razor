@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using Savr.Client.Services.Interafces
+@using System.Globalization
 @inject NavigationManager navigateMgr;
 @implements IDisposable
 @inject ILogger<NavigationManager> Logger
@@ -11,7 +13,7 @@
 			<MudCard Elevation="2" Class="pa-1 card-income">
 				<MudCardHeader>
 					<CardHeaderContent>
-						<MudText Typo="Typo.h3" Style="color: mediumseagreen">@incomeTotal $</MudText>
+						<MudText Typo="Typo.h3" Style="color: mediumseagreen">@dashboardData.TotalIncome $</MudText>
 					</CardHeaderContent>
 					<CardHeaderActions>
 						<MudIconButton Icon="@Icons.Material.Filled.ArrowCircleRight" Size="@Size.Large" Color="Color.Default"
@@ -27,7 +29,7 @@
 			<MudCard Elevation="2" Class="pa-1 card-expense">
 				<MudCardHeader>
 					<CardHeaderContent>
-						<MudText Typo="Typo.h3" Style="color: deeppink">@expensesTotal $</MudText>
+						<MudText Typo="Typo.h3" Style="color: deeppink" Format="F2">@dashboardData.TotalExpences $</MudText>
 					</CardHeaderContent>
 					<CardHeaderActions>
 						<MudIconButton Icon="@Icons.Material.Filled.ArrowCircleRight" Size="@Size.Large" Color="Color.Default"
@@ -43,7 +45,7 @@
 			<MudCard Elevation="2" Class="pa-1 card-savings">
 				<MudCardHeader>
 					<CardHeaderContent>
-						<MudText Typo="Typo.h3" Style="color: blueviolet">@savingsTotal $</MudText>
+						<MudText Typo="Typo.h3" Style="color: blueviolet"> @dashboardData.TotalSavings $</MudText>
 					</CardHeaderContent>
 					<CardHeaderActions>
 						<MudIconButton Icon="@Icons.Material.Filled.Analytics" Size="@Size.Large" Color="Color.Default" />
@@ -56,27 +58,23 @@
 		</MudItem>
 		<MudItem xs="12" sm="6">
 			<MudPaper Elevation="2" Class="pa-4 object-center" Style="height: 100%;align-content:center">
-				<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
+				<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@graphIncomedata" InputLabels="@graphIncomeLabels">
 					<CustomGraphics>
-						<text class="donut-inner-text" x="50%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="16">Expences by Category</text>
-						<text class="donut-inner-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="50">@data.Sum().ToString()</text>
+						<text class="donut-inner-text" x="50%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="16">Income Breakdown</text>
+						<text class="donut-inner-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="50">@graphIncomedata.Sum().ToString()</text>
 					</CustomGraphics>
 				</MudChart>
 			</MudPaper>
 		</MudItem>
 		<MudItem xs="12" sm="6">
 			<MudPaper Elevation="2" Class="pa-4 object-center" Style="height: 100%;align-content:center">
-				<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
+				<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@graphExpensedata" InputLabels="@graphExpenseLabels">
 					<CustomGraphics>
-						<text class="donut-inner-text" x="50%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="16">Income Breakdown</text>
-						<text class="donut-inner-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="50">@data.Sum().ToString()</text>
+						<text class="donut-inner-text" x="50%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="16">Expences by Category</text>
+						<text class="donut-inner-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="50">@graphExpensedata.Sum().ToString()</text>
 					</CustomGraphics>
 				</MudChart>
 			</MudPaper>
-			@code {
-				public double[] data = { 25, 77, 28, 5 };
-				public string[] labels = { "Oil", "Coal", "Gas", "Biomass" };
-			}
 		</MudItem>
 	</MudGrid>
 </MudContainer>
@@ -112,17 +110,35 @@
 </style>
 
 @code {
+	public Savr.Client.Data.Models.Dashboard dashboardData = new Data.Models.Dashboard { TotalExpences = 0, TotalIncome = 0, TotalSavings = 0 };
+
+	[Inject]
+	public IDashboardService DashboardService { get; set; }
+
 	bool _drawerOpen = true;
-	int expensesTotal = 6790;
-	int incomeTotal = 3600;
-	int savingsTotal = 2900;
+	public double[]? graphIncomedata = { };
+	public string[]? graphIncomeLabels = { };
+	public double[]? graphExpensedata = { };
+	public string[]? graphExpenseLabels = { };
 
 	private bool _editable = true;
 	private bool _clearable = true;
 	private DateRange _dateRange { get; set; }
+	public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
 
 	private void NavigateToIncomeComponent() => navigateMgr.NavigateTo("income");
 	private void NavigateToExpenseComponent() => navigateMgr.NavigateTo("expenses");
+
+	protected override async Task OnInitializedAsync()
+	{
+		dashboardData = await DashboardService.GetDashboardData();
+
+		graphIncomedata = dashboardData.IncomeItems.Select(q => decimal.ToDouble(q.Sum)).ToArray();
+		graphIncomeLabels = dashboardData.IncomeItems.Select(q => q.Category).ToArray();
+
+		graphExpensedata = dashboardData.ExpenseItems.Select(q => decimal.ToDouble(q.Sum)).ToArray();
+		graphExpenseLabels = dashboardData.ExpenseItems.Select(q => q.Category).ToArray();
+	}
 
 	protected override void OnInitialized() =>
 		navigateMgr.LocationChanged += HandleLocationChanged;
