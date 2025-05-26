@@ -7,6 +7,15 @@ Date: 22.05.2025
 Author: Sameera Dayananda
 Personal Finance Tracker
 
+![dashboard](https://github.com/user-attachments/assets/21b92c4c-aa6e-438b-9fb4-34212d45f897)
+
+![add-found](https://github.com/user-attachments/assets/40972257-39db-43ae-bd54-0299f3ee9b1e)
+
+![add-expense](https://github.com/user-attachments/assets/0d0ba4b5-49de-4fe1-b5be-aa53d73b1903)
+
+![graphs](https://github.com/user-attachments/assets/5562e4cc-0ab6-4ce8-8ba6-4c37575bd7c6)
+
+
 Revision History
 Date	Version	Description	Author
 22.05.2025	
@@ -22,6 +31,9 @@ Savr provides users with a streamlined platform to input income and expenses, ca
 
 5. Architecture & Technologies
 Architecture Overview
+
+![image (1)](https://github.com/user-attachments/assets/91113e46-77e8-4f05-b374-be01f809ab37)
+
 
 Savr is built following the principles of Clean Architecture, ensuring a clear separation of concerns across the layers. It keeps the core business or application logic use cases independent of frontend and external frameworks. . This architecture promotes maintainability, testability, and scalability by organizing the codebase into well-defined layers:
 Independent of UI: presentation layers could change easily without altering the application layer and so on. UI can be from any front-end framework, or console UI, any web, and can be replaced without changing the other layers or rest of the system.
