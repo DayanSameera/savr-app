@@ -56,13 +56,14 @@ The Savr personal finance tracker app is built using a modern full-stack approac
 <h2>Project Setup Guide</h2>
 
 1). Colne the source code into your local development environment. <br>
-2). Create a database named 'SavrDevDB' using MSSMS. <br>
-3). Open Savr.API project and navigate to appsettings.Development.json file. Makesure the sql server instance and database names are matching. <br>
-4). Run the migration using the folowing comands. Use Package Manager Console. and change the eunning project as Savr.Infrastructure before run the following <br>
+2). Restore the NuGet packages for each project.
+3). Create a database named 'SavrDevDB' using MSSMS. <br>
+4). Open Savr.API project and navigate to appsettings.Development.json file. Makesure the sql server instance and database names are matching. <br>
+5). Run the migration using the folowing comands. Use Package Manager Console. and change the eunning project as Savr.Infrastructure before run the following <br>
      
       Add-Migration Initial -StartupProject Savr.Api <br>
       Update-Database -StartupProject Savr.Api <br>
 
-5). Go to Set multiple startup projects and set Savr.API and Savr.Client as starting projects. <br>
-6). Move to Savr.Client which is the blazor web client, change the Rest endpoint URL accordingly. <br>
-7). Run the project.  <br>
+6). Go to Set multiple startup projects and set Savr.API and Savr.Client as starting projects. <br>
+7). Move to Savr.Client which is the blazor web client, change the Rest endpoint URL accordingly. <br>
+8). Run the project.  <br>
