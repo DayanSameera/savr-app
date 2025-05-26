@@ -4,7 +4,7 @@ using Savr.Client.Services;
 using Savr.Client.Services.Interafces;
 
 var builder = WebApplication.CreateBuilder(args);
-var baseAddress = "https://localhost:7285/";
+var baseAddress = builder.Configuration.GetValue<string>("WebCLientConfigs:BaseURL");
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
