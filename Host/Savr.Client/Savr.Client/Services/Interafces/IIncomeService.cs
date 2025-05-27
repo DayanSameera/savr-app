@@ -8,6 +8,6 @@ namespace Savr.Client.Services.Interafces
         Task<IEnumerable<Income>> GetIncomes();
         Task<Income> GetIncome(string Id);
         Task<string> CreateIncome(Income income);
-        Task<string> DeleteIncome(string Id);
+        Task<bool> DeleteIncome(string Id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Savr.Client.Data.Models;
+﻿using System.Security.Cryptography.Xml;
+using Savr.Client.Data.Models;
 using Savr.Client.Services.Interafces;
 
 namespace Savr.Client.Services
@@ -18,9 +19,10 @@ namespace Savr.Client.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        public Task<string> DeleteExpense(string Id)
+        public async Task<bool> DeleteExpense(string id)
         {
-            throw new NotImplementedException();
+            var response = await httpClient.PostAsJsonAsync("/api/Expense/delete/" + id, id);
+            return true;
         }
 
         public Task<Expense> GetExpense(string Id)

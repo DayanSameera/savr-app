@@ -5,6 +5,7 @@
 @attribute [StreamRendering]
 @inject NavigationManager navigateMgr;
 @inject IDialogService DialogService
+@inject ISnackbar SnackBar
 
 <PageTitle>Income</PageTitle>
 
@@ -27,7 +28,7 @@
 				<CellTemplate>
 					<MudStack Row>
 						<MudButton Size="@Size.Small" Variant="@Variant.Outlined" Color="@Color.Primary">Edit</MudButton>
-						<MudButton Size="@Size.Small" Variant="@Variant.Outlined" Color="@Color.Primary">DElete</MudButton>
+						<MudButton Size="@Size.Small" Variant="@Variant.Outlined" Color="@Color.Primary" @onclick="@(() => Delete(@context.Item))">Delete</MudButton>
 					</MudStack>
 				</CellTemplate>
 			</TemplateColumn>
@@ -35,9 +36,18 @@
 	</MudDataGrid>
 </MudContainer>
 
+<MudMessageBox @ref="_mudMessageBox" Title="Warning" CancelText="Cancel">
+	<MessageContent>
+		Are you sure you want to delete this?
+	</MessageContent>
+	<YesButton>
+		<MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever">Delete</MudButton>
+	</YesButton>
+</MudMessageBox>
 
 @code {
 	public IEnumerable<Savr.Client.Data.Models.Income> incomeList;
+	private MudMessageBox _mudMessageBox;
 
 	[Inject]
 	public IIncomeService IncomeService { get; set; }
@@ -60,6 +70,25 @@
 		else
 		{
 			var data = dialogResult.Data;
+			incomeList = await IncomeService.GetIncomes();
+			StateHasChanged();
+		}
+	}
+
+	private async void Delete(Savr.Client.Data.Models.Income item)
+	{
+		bool? result = await _mudMessageBox.ShowAsync();
+		var _state = result is null ? false : true;
+
+		if (!_state)
+		{
+			StateHasChanged();
+		}
+		else
+		{
+			var response = await IncomeService.DeleteIncome(item.IncomeId);
+			SnackBar.Add("Record deleted successfully!", Severity.Success);
+
 			incomeList = await IncomeService.GetIncomes();
 			StateHasChanged();
 		}

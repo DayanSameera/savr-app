@@ -19,9 +19,10 @@ namespace Savr.Client.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        public Task<string> DeleteIncome(string Id)
+        public async Task<bool> DeleteIncome(string id)
         {
-            throw new NotImplementedException();
+            var response = await httpClient.PostAsJsonAsync("/api/Income/delete/" + id, id);
+            return true;
         }
 
         public Task<Income> GetIncome(string Id)

@@ -4,6 +4,7 @@ namespace Savr.Client.Data.Models
 {
     public class Income
     {
+        public required string IncomeId { get; set; }
         public required string SourceName { get; set; }
         public required string IncomeCategory { get; set; }
         public required decimal Amount { get; set; }

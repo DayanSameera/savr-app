@@ -7,10 +7,25 @@ namespace Savr.Api.Controllers
     [ApiController]
     public class DashboardController : BaseController
     {
+        /// <summary>
+        /// Get dashboard data
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<DashboardDTO>> Get()
         {
-            return await Mediator.Send(new GetDashboardQuery());
+            try
+            {
+                var response = await Mediator.Send(new GetDashboardQuery());
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
         }
     }
 }

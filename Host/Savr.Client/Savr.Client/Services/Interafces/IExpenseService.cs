@@ -7,6 +7,6 @@ namespace Savr.Client.Services.Interafces
         Task<IEnumerable<Expense>> GetExpenses();
         Task<Expense> GetExpense(string Id);
         Task<string> CreateExpense(Expense expense);
-        Task<string> DeleteExpense(string Id);
+        Task<bool> DeleteExpense(string Id);
     }
 }
